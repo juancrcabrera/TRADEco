@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TRADEco Admin</title>
+    <title>Mi Dashboard - TRADEco</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -20,7 +21,6 @@
             min-height: 100vh;
         }
 
-        /* === Navbar === */
         .navbar {
             background-color: #9fb9a8;
             padding: 1rem;
@@ -44,7 +44,24 @@
         .navbar .subtitle {
             color: rgba(255,255,255,0.9);
             font-size: 0.9rem;
-            font-weight: 400;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255,255,255,0.2);
         }
 
         .logout-btn {
@@ -62,15 +79,76 @@
         .logout-btn:hover {
             background-color: #88a591;
             color: white;
-            transform: translateY(-2px);
         }
 
         .container {
             width: 90%;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 2rem auto;
         }
 
+        .welcome-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .welcome-section h2 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Filtros */
+        .filters-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4a6653;
+            font-weight: 600;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 0.7rem;
+            border: 1px solid #e6ede9;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn-filter {
+            background: #9fb9a8;
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 1rem;
+        }
+
+        .btn-filter:hover {
+            background: #88a591;
+        }
+
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -79,38 +157,65 @@
         }
 
         .stat-card {
-            background-color: #ffffff;
-            border: 1px solid #e6ede9;
+            background: white;
             border-radius: 12px;
             padding: 1.5rem;
-            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
 
         .stat-card h3 {
             color: #4a6653;
-            font-size: 0.9em;
-            margin-bottom: 10px;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .stat-card .value {
-            font-size: 2.5em;
+            font-size: 2.5rem;
             font-weight: bold;
-            color: #9fb9a8;
-            margin-bottom: 10px;
+            margin: 0.5rem 0;
         }
 
         .stat-card .subtitle {
             color: #7a8a7e;
-            font-size: 0.9em;
+            font-size: 0.85rem;
         }
 
+        .stat-card.success .value { color: #198754; }
+        .stat-card.primary .value { color: #0d6efd; }
+        .stat-card.warning .value { color: #ffc107; }
+        .stat-card.danger .value { color: #dc3545; }
+        .stat-card.info .value { color: #0dcaf0; }
+
+        /* Balance especial */
+        .balance-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            grid-column: 1 / -1;
+        }
+
+        .balance-card h3 {
+            color: white;
+            opacity: 0.9;
+        }
+
+        .balance-card .value {
+            font-size: 3rem;
+            color: white;
+        }
+
+        /* Charts */
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -119,30 +224,63 @@
         }
 
         .chart-card {
-            background-color: #ffffff;
-            border: 1px solid #e6ede9;
+            background: white;
             border-radius: 12px;
             padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .chart-card h2 {
+        .chart-card h3 {
             color: #4a6653;
             margin-bottom: 1.5rem;
-            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            border-bottom: 2px solid #e6ede9;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            background: none;
+            border: none;
+            color: #4a6653;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #9fb9a8;
+            border-bottom-color: #9fb9a8;
+        }
+
+        .tab:hover {
+            background: #f5f7f6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tabla */
         .table-card {
-            background-color: #ffffff;
-            border: 1px solid #e6ede9;
+            background: white;
             border-radius: 12px;
             padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .table-card h2 {
-            color: #4a6653;
-            margin-bottom: 1.5rem;
-            font-size: 1.3em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow-x: auto;
         }
 
         table {
@@ -151,7 +289,7 @@
         }
 
         th {
-            background-color: #f5f7f6;
+            background: #f5f7f6;
             padding: 1rem;
             text-align: left;
             font-weight: 600;
@@ -162,94 +300,65 @@
         td {
             padding: 1rem;
             border-bottom: 1px solid #e6ede9;
-            color: #364a3f;
         }
 
         tr:hover {
-            background-color: #f5f7f6;
+            background: #f5f7f6;
+            cursor: pointer;
         }
 
-        .loading {
-            text-align: center;
-            padding: 50px;
-            color: #4a6653;
-            font-size: 1.5em;
-            background-color: #ffffff;
-            border: 1px solid #e6ede9;
-            border-radius: 12px;
-            margin: 2rem auto;
+        .table-card tbody tr {
+            transition: all 0.2s;
         }
 
-        .error {
-            background-color: #e57373;
-            color: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            margin-bottom: 2rem;
+        .table-card tbody tr:hover {
+            background: #e6ede9;
+            transform: scale(1.01);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .badge {
             padding: 0.4rem 0.8rem;
             border-radius: 20px;
-            font-size: 0.85em;
+            font-size: 0.85rem;
             font-weight: 600;
         }
 
-        .badge.success {
-            background-color: #d8e6db;
+        .badge.success { background: #d1e7dd; color: #0f5132; }
+        .badge.danger { background: #f8d7da; color: #842029; }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
             color: #4a6653;
         }
 
-        .badge.warning {
-            background-color: #ffeaa7;
-            color: #856404;
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #9fb9a8;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
         }
 
-        .badge.sold {
-            background-color: #cfd6d2;
-            color: #364a3f;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
+
+        .positive { color: #198754; }
+        .negative { color: #dc3545; }
 
         @media (max-width: 768px) {
             .charts-grid {
                 grid-template-columns: 1fr;
             }
-            
             .navbar {
                 flex-direction: column;
                 gap: 1rem;
             }
-
-            .navbar .logo {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            table {
-                font-size: 0.85em;
-            }
-
-            th, td {
-                padding: 0.7rem;
-            }
-
-            .stat-card .value {
-                font-size: 2em;
-            }
-        }
-
-        /* Animación de carga */
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        .loading {
-            animation: pulse 2s ease-in-out infinite;
         }
     </style>
 </head>
@@ -258,368 +367,478 @@
     <div class="navbar">
         <div class="logo">
             <div>
-                <h1>📊 Dashboard TRADEco</h1>
-                <div class="subtitle">Panel de Administración</div>
+                <h1>📊 TRADEco</h1>
+                <div class="subtitle">Mi Dashboard Personal</div>
             </div>
         </div>
-        <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        <div class="nav-links">
+            <a href="index.html"><i class="bi bi-house"></i> Inicio</a>
+            <a href="publicar.html"><i class="bi bi-plus-circle"></i> Publicar</a>
+            <a href="perfil.html"><i class="bi bi-person"></i> Perfil</a>
+            <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+        </div>
     </div>
 
     <div class="container">
-        <div id="error-container"></div>
-        <div id="loading" class="loading">Cargando estadísticas...</div>
-
-        <!-- Tarjetas de Estadísticas -->
-        <div class="stats-grid" id="stats-grid" style="display: none;">
-            <div class="stat-card">
-                <h3>👥 Total Usuarios</h3>
-                <div class="value" id="total-users">0</div>
-                <div class="subtitle" id="new-users-subtitle">+0 este mes</div>
-            </div>
-            <div class="stat-card">
-                <h3>📦 Total Productos</h3>
-                <div class="value" id="total-products">0</div>
-                <div class="subtitle" id="new-products-subtitle">+0 este mes</div>
-            </div>
-            <div class="stat-card">
-                <h3>✅ Disponibles</h3>
-                <div class="value" id="available-products">0</div>
-                <div class="subtitle">Productos activos</div>
-            </div>
-            <div class="stat-card">
-                <h3>💰 Vendidos</h3>
-                <div class="value" id="sold-products">0</div>
-                <div class="subtitle">Productos vendidos</div>
-            </div>
+        <!-- Bienvenida -->
+        <div class="welcome-section">
+            <h2>👋 Hola, <span id="username">Usuario</span></h2>
+            <p>Aquí está el resumen de tu actividad en TRADEco</p>
         </div>
 
-        <!-- Gráficos -->
-        <div class="charts-grid" id="charts-grid" style="display: none;">
-            <div class="chart-card">
-                <h2>📈 Productos por Categoría</h2>
-                <canvas id="categoryChart"></canvas>
-            </div>
-            <div class="chart-card">
-                <h2>👥 Crecimiento de Usuarios</h2>
-                <canvas id="growthChart"></canvas>
-            </div>
+        <!-- Loading -->
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Cargando tu información financiera...</p>
         </div>
 
-        <!-- Top Sellers -->
-        <div class="table-card" id="sellers-table" style="display: none;">
-            <h2>🏆 Top Vendedores</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Usuario</th>
-                        <th>Total Productos</th>
-                        <th>Disponibles</th>
-                    </tr>
-                </thead>
-                <tbody id="sellers-tbody"></tbody>
-            </table>
-        </div>
+        <!-- Contenido principal (oculto hasta cargar) -->
+        <div id="main-content" style="display: none;">
+            
+            <!-- Filtros -->
+            <div class="filters-card">
+                <h3><i class="bi bi-funnel"></i> Filtros</h3>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Fecha Inicio</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>Fecha Fin</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <div class="filter-group">
+                        <label>Categoría</label>
+                        <select id="categoryFilter">
+                            <option value="">Todas</option>
+                            <option value="Remeras">Remeras</option>
+                            <option value="Abrigos">Abrigos</option>
+                            <option value="Pantalones">Pantalones</option>
+                            <option value="Vestidos">Vestidos</option>
+                            <option value="Calzado">Calzado</option>
+                            <option value="Accesorios">Accesorios</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <button class="btn-filter" onclick="applyFilters()">
+                            <i class="bi bi-search"></i> Aplicar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-        <!-- Actividad Reciente -->
-        <div class="table-card" id="activity-table" style="display: none;">
-            <h2>🕒 Productos Recientes</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Usuario</th>
-                        <th>Categoría</th>
-                        <th>Precio</th>
-                        <th>Estado</th>
-                        <th>Fecha</th>
-                    </tr>
-                </thead>
-                <tbody id="activity-tbody"></tbody>
-            </table>
+            <!-- Estadísticas -->
+            <div class="stats-grid">
+                <div class="stat-card success">
+                    <h3><i class="bi bi-cart-check"></i> Ventas Totales</h3>
+                    <div class="value" id="totalSales">$0</div>
+                    <div class="subtitle"><span id="salesCount">0</span> transacciones</div>
+                </div>
+
+                <div class="stat-card warning">
+                    <h3><i class="bi bi-cash-coin"></i> Costos</h3>
+                    <div class="value" id="totalCost">$0</div>
+                    <div class="subtitle">Inversión total</div>
+                </div>
+
+                <div class="stat-card primary">
+                    <h3><i class="bi bi-graph-up-arrow"></i> Ganancias</h3>
+                    <div class="value" id="totalProfit">$0</div>
+                    <div class="subtitle">Margen: <span id="profitMargin">0%</span></div>
+                </div>
+
+                <div class="stat-card danger">
+                    <h3><i class="bi bi-bag"></i> Compras Totales</h3>
+                    <div class="value" id="totalPurchases">$0</div>
+                    <div class="subtitle"><span id="purchasesCount">0</span> transacciones</div>
+                </div>
+
+                <div class="stat-card info">
+                    <h3><i class="bi bi-box"></i> Mis Productos</h3>
+                    <div class="value" id="myProducts">0</div>
+                    <div class="subtitle"><span id="availableProducts">0</span> disponibles</div>
+                </div>
+
+                <!-- Balance Neto - Ocupa todo el ancho -->
+                <div class="stat-card balance-card">
+                    <h3>💰 Balance Neto</h3>
+                    <div class="value" id="netBalance">$0</div>
+                    <div class="subtitle">Ingresos - Gastos</div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3><i class="bi bi-pie-chart"></i> Ventas por Categoría</h3>
+                    <canvas id="salesByCategoryChart"></canvas>
+                </div>
+                <div class="chart-card">
+                    <h3><i class="bi bi-bar-chart"></i> Márgenes de Ganancia</h3>
+                    <canvas id="profitMarginsChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabs: Historial -->
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('sales')">
+                    <i class="bi bi-cart-check"></i> Historial de Ventas
+                </button>
+                <button class="tab" onclick="switchTab('purchases')">
+                    <i class="bi bi-bag"></i> Historial de Compras
+                </button>
+            </div>
+
+            <!-- Contenido de tabs -->
+            <div id="sales-content" class="tab-content active">
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio Venta</th>
+                                <th>Costo</th>
+                                <th>Ganancia</th>
+                                <th>Margen %</th>
+                                <th>Comprador</th>
+                            </tr>
+                        </thead>
+                        <tbody id="salesTableBody">
+                            <tr>
+                                <td colspan="8" class="loading">Cargando ventas...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="purchases-content" class="tab-content">
+                <div class="table-card">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Fecha</th>
+                                <th>Producto</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Vendedor</th>
+                                <th>Método de Pago</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchasesTableBody">
+                            <tr>
+                                <td colspan="6" class="loading">Cargando compras...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
     </div>
 
     <script>
         const API_URL = 'http://localhost:5000/api';
-        let token = localStorage.getItem('token');
+        let currentFilters = {};
+        let salesChart, marginsChart;
 
-        // Verificar autenticación
-        if (!token) {
-            window.location.href = 'login.html';
-        }
+        // Verificar autenticación (SIN verificación de admin)
+        function checkAuth() {
+            const token = localStorage.getItem('token');
+            const username = localStorage.getItem('username');
 
-        // Función para hacer peticiones
-        async function fetchAPI(endpoint) {
-            const response = await fetch(`${API_URL}${endpoint}`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            
-            if (response.status === 401 || response.status === 403) {
-                logout();
-                return null;
+            if (!token) {
+                alert('Debes iniciar sesión para ver tu dashboard');
+                window.location.href = 'login.html';
+                return false;
             }
-            
-            return await response.json();
+
+            // Mostrar username
+            document.getElementById('username').textContent = username || 'Usuario';
+            return true;
         }
 
-        // Cargar estadísticas generales
-        async function loadStats() {
-            try {
-                const result = await fetchAPI('/dashboard/stats');
-                
-                if (result && result.success) {
-                    const data = result.data;
-                    
-                    document.getElementById('total-users').textContent = data.users.total;
-                    document.getElementById('total-products').textContent = data.products.total;
-                    document.getElementById('available-products').textContent = data.products.available;
-                    document.getElementById('sold-products').textContent = data.products.sold;
-                    
-                    document.getElementById('new-users-subtitle').textContent = 
-                        `+${data.users.new_last_30_days} últimos 30 días`;
-                    document.getElementById('new-products-subtitle').textContent = 
-                        `+${data.products.new_last_30_days} últimos 30 días`;
-                    
-                    document.getElementById('stats-grid').style.display = 'grid';
-                }
-            } catch (error) {
-                showError('Error al cargar estadísticas');
-                console.error(error);
-            }
-        }
-
-        // Cargar gráfico de categorías
-        async function loadCategoryChart() {
-            try {
-                const result = await fetchAPI('/dashboard/products-by-category');
-                
-                if (result && result.success) {
-                    const data = result.data;
-                    const ctx = document.getElementById('categoryChart').getContext('2d');
-                    
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: data.map(item => item.categoria),
-                            datasets: [{
-                                label: 'Total',
-                                data: data.map(item => item.total),
-                                backgroundColor: 'rgba(159, 185, 168, 0.8)',
-                                borderColor: 'rgba(159, 185, 168, 1)',
-                                borderWidth: 2,
-                                borderRadius: 8
-                            }, {
-                                label: 'Disponibles',
-                                data: data.map(item => item.disponibles),
-                                backgroundColor: 'rgba(216, 230, 219, 0.8)',
-                                borderColor: 'rgba(216, 230, 219, 1)',
-                                borderWidth: 2,
-                                borderRadius: 8
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: '#364a3f',
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        color: '#364a3f'
-                                    },
-                                    grid: {
-                                        color: '#e6ede9'
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        color: '#364a3f'
-                                    },
-                                    grid: {
-                                        display: false
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-            } catch (error) {
-                console.error('Error al cargar gráfico de categorías:', error);
-            }
-        }
-
-        // Cargar gráfico de crecimiento
-        async function loadGrowthChart() {
-            try {
-                const result = await fetchAPI('/dashboard/users-growth');
-                
-                if (result && result.success) {
-                    const data = result.data;
-                    const ctx = document.getElementById('growthChart').getContext('2d');
-                    
-                    new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: data.map(item => item.month),
-                            datasets: [{
-                                label: 'Nuevos Usuarios',
-                                data: data.map(item => item.count),
-                                backgroundColor: 'rgba(159, 185, 168, 0.2)',
-                                borderColor: 'rgba(74, 102, 83, 1)',
-                                borderWidth: 3,
-                                fill: true,
-                                tension: 0.4,
-                                pointBackgroundColor: '#9fb9a8',
-                                pointBorderColor: '#fff',
-                                pointBorderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 7
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: '#364a3f',
-                                        font: {
-                                            size: 12
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    ticks: {
-                                        color: '#364a3f'
-                                    },
-                                    grid: {
-                                        color: '#e6ede9'
-                                    }
-                                },
-                                x: {
-                                    ticks: {
-                                        color: '#364a3f'
-                                    },
-                                    grid: {
-                                        display: false
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    
-                    document.getElementById('charts-grid').style.display = 'grid';
-                }
-            } catch (error) {
-                console.error('Error al cargar gráfico de crecimiento:', error);
-            }
-        }
-
-        // Cargar top sellers
-        async function loadTopSellers() {
-            try {
-                const result = await fetchAPI('/dashboard/top-sellers');
-                
-                if (result && result.success) {
-                    const data = result.data;
-                    const tbody = document.getElementById('sellers-tbody');
-                    
-                    tbody.innerHTML = data.map(seller => `
-                        <tr>
-                            <td><strong>${seller.username}</strong></td>
-                            <td>${seller.total_products}</td>
-                            <td>${seller.available}</td>
-                        </tr>
-                    `).join('');
-                    
-                    document.getElementById('sellers-table').style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error al cargar top sellers:', error);
-            }
-        }
-
-        // Cargar actividad reciente
-        async function loadRecentActivity() {
-            try {
-                const result = await fetchAPI('/dashboard/recent-activity');
-                
-                if (result && result.success) {
-                    const products = result.data.recent_products;
-                    const tbody = document.getElementById('activity-tbody');
-                    
-                    tbody.innerHTML = products.map(product => {
-                        let badgeClass = 'success';
-                        if (product.estado === 'vendido') badgeClass = 'sold';
-                        else if (product.estado === 'reservado') badgeClass = 'warning';
-                        
-                        return `
-                            <tr>
-                                <td><strong>${product.nombre}</strong></td>
-                                <td>${product.username}</td>
-                                <td>${product.categoria}</td>
-                                <td>$${product.precio}</td>
-                                <td>
-                                    <span class="badge ${badgeClass}">
-                                        ${product.estado}
-                                    </span>
-                                </td>
-                                <td>${new Date(product.created_at).toLocaleDateString('es-AR')}</td>
-                            </tr>
-                        `;
-                    }).join('');
-                    
-                    document.getElementById('activity-table').style.display = 'block';
-                }
-            } catch (error) {
-                console.error('Error al cargar actividad reciente:', error);
-            }
-        }
-
-        // Mostrar error
-        function showError(message) {
-            const errorContainer = document.getElementById('error-container');
-            errorContainer.innerHTML = `<div class="error">${message}</div>`;
-        }
-
-        // Logout
         function logout() {
             localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('role');
             window.location.href = 'login.html';
         }
 
-        // Cargar todos los datos
-        async function loadDashboard() {
-            document.getElementById('loading').style.display = 'block';
+        // Cambiar tabs
+        function switchTab(tab) {
+            // Actualizar botones
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.closest('.tab').classList.add('active');
+
+            // Actualizar contenido
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
-            await loadStats();
-            await loadCategoryChart();
-            await loadGrowthChart();
-            await loadTopSellers();
-            await loadRecentActivity();
-            
-            document.getElementById('loading').style.display = 'none';
+            if (tab === 'sales') {
+                document.getElementById('sales-content').classList.add('active');
+            } else {
+                document.getElementById('purchases-content').classList.add('active');
+                loadPurchasesHistory();
+            }
         }
 
-        // Inicializar
-        loadDashboard();
+        // Cargar finanzas
+        async function loadFinances() {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams(currentFilters);
+            
+            try {
+                const response = await fetch(`${API_URL}/finances/my-finances?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    renderFinances(result.data);
+                    await loadMyProducts();
+                } else {
+                    alert('Error: ' + result.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error al cargar finanzas');
+            }
+        }
 
-        // Actualizar cada 5 minutos
-        setInterval(loadDashboard, 300000);
+        // Renderizar finanzas
+        function renderFinances(data) {
+            // Ventas
+            document.getElementById('totalSales').textContent = 
+                `$${data.sales.total_amount.toLocaleString('es-AR')}`;
+            document.getElementById('salesCount').textContent = data.sales.total_transactions;
+            
+            // Costos
+            document.getElementById('totalCost').textContent = 
+                `$${data.sales.total_cost.toLocaleString('es-AR')}`;
+            
+            // Ganancias
+            const profitClass = data.sales.total_profit >= 0 ? 'positive' : 'negative';
+            document.getElementById('totalProfit').className = profitClass;
+            document.getElementById('totalProfit').textContent = 
+                `$${data.sales.total_profit.toLocaleString('es-AR')}`;
+            document.getElementById('profitMargin').textContent = 
+                `${data.sales.profit_margin_percentage.toFixed(1)}%`;
+            
+            // Compras
+            document.getElementById('totalPurchases').textContent = 
+                `$${data.purchases.total_amount.toLocaleString('es-AR')}`;
+            document.getElementById('purchasesCount').textContent = data.purchases.total_transactions;
+            
+            // Balance neto
+            const balanceClass = data.summary.net_balance >= 0 ? 'positive' : 'negative';
+            document.getElementById('netBalance').className = `value ${balanceClass}`;
+            document.getElementById('netBalance').textContent = 
+                `$${data.summary.net_balance.toLocaleString('es-AR')}`;
+
+            // Renderizar gráficos
+            renderCharts(data);
+        }
+
+        // Renderizar gráficos
+        function renderCharts(data) {
+            const categories = Object.keys(data.sales.by_category);
+            
+            if (categories.length === 0) {
+                return; // No hay datos
+            }
+
+            const salesData = categories.map(cat => data.sales.by_category[cat].total_sales);
+            const margins = categories.map(cat => {
+                const catData = data.sales.by_category[cat];
+                return ((catData.total_profit / catData.total_sales) * 100).toFixed(1);
+            });
+            
+            // Gráfico de ventas
+            const ctxSales = document.getElementById('salesByCategoryChart').getContext('2d');
+            if (salesChart) salesChart.destroy();
+            
+            salesChart = new Chart(ctxSales, {
+                type: 'pie',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: salesData,
+                        backgroundColor: [
+                            '#198754', '#20c997', '#0dcaf0', '#0d6efd', '#6610f2', '#d63384'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // Gráfico de márgenes
+            const ctxMargins = document.getElementById('profitMarginsChart').getContext('2d');
+            if (marginsChart) marginsChart.destroy();
+            
+            marginsChart = new Chart(ctxMargins, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Margen %',
+                        data: margins,
+                        backgroundColor: '#198754'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        // Cargar mis productos
+        async function loadMyProducts() {
+            const token = localStorage.getItem('token');
+            
+            try {
+                const response = await fetch(`${API_URL}/products/my-products`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const total = result.data.length;
+                    const available = result.data.filter(p => p.estado === 'disponible').length;
+                    
+                    document.getElementById('myProducts').textContent = total;
+                    document.getElementById('availableProducts').textContent = available;
+                }
+            } catch (error) {
+                console.error('Error al cargar productos:', error);
+            }
+        }
+
+        // Cargar historial de ventas
+        async function loadSalesHistory() {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams(currentFilters);
+            
+            try {
+                const response = await fetch(`${API_URL}/finances/sales-history?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const tbody = document.getElementById('salesTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (result.data.sales.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center;">No hay ventas registradas</td></tr>';
+                        return;
+                    }
+                    
+                    result.data.sales.forEach(sale => {
+                        const date = new Date(sale.completed_at);
+                        tbody.innerHTML += `
+                            <tr style="cursor: pointer;" onclick="window.location.href='transaccion.html?id=${sale.transaction_id}'">
+                                <td>${date.toLocaleDateString('es-AR')}</td>
+                                <td>${sale.product_name}</td>
+                                <td><span class="badge success">${sale.categoria}</span></td>
+                                <td>${sale.precio_venta.toLocaleString('es-AR')}</td>
+                                <td>${sale.costo.toLocaleString('es-AR')}</td>
+                                <td class="${sale.ganancia >= 0 ? 'positive' : 'negative'}">
+                                    ${sale.ganancia.toLocaleString('es-AR')}
+                                </td>
+                                <td>${sale.margen_porcentaje.toFixed(1)}%</td>
+                                <td>@${sale.buyer_username}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar ventas:', error);
+            }
+        }
+
+        // Cargar historial de compras
+        async function loadPurchasesHistory() {
+            const token = localStorage.getItem('token');
+            const params = new URLSearchParams(currentFilters);
+            
+            try {
+                const response = await fetch(`${API_URL}/finances/purchases-history?${params}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    const tbody = document.getElementById('purchasesTableBody');
+                    tbody.innerHTML = '';
+                    
+                    if (result.data.purchases.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No hay compras registradas</td></tr>';
+                        return;
+                    }
+                    
+                    result.data.purchases.forEach(purchase => {
+                        const date = new Date(purchase.completed_at);
+                        tbody.innerHTML += `
+                            <tr style="cursor: pointer;" onclick="window.location.href='transaccion.html?id=${purchase.transaction_id}'">
+                                <td>${date.toLocaleDateString('es-AR')}</td>
+                                <td>${purchase.product_name}</td>
+                                <td><span class="badge danger">${purchase.categoria}</span></td>
+                                <td>${purchase.precio.toLocaleString('es-AR')}</td>
+                                <td>@${purchase.seller_username}</td>
+                                <td>${purchase.payment_method || 'N/A'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar compras:', error);
+            }
+        }
+
+        // Aplicar filtros
+        function applyFilters() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            const category = document.getElementById('categoryFilter').value;
+            
+            currentFilters = {};
+            if (startDate) currentFilters.start_date = startDate;
+            if (endDate) currentFilters.end_date = endDate;
+            if (category) currentFilters.categoria = category;
+            
+            initDashboard();
+        }
+
+        // Inicializar dashboard
+        async function initDashboard() {
+            if (!checkAuth()) return;
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('main-content').style.display = 'none';
+
+            await loadFinances();
+            await loadSalesHistory();
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+        }
+
+        // Ejecutar al cargar
+        document.addEventListener('DOMContentLoaded', initDashboard);
     </script>
 </body>
 </html>

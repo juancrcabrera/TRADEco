@@ -35,8 +35,8 @@ class Transaction:
         chars = string.ascii_uppercase + string.digits
         code = ''.join(secrets.choice(chars) for _ in range(6))
         return f"TRD-{code}"
-    
-    def create(self, product_id, buyer_id, seller_id, product_data):
+
+    def create(self, product_id, buyer_id, seller_id, product_data, buyer_data=None, seller_data=None):
         """
         Crear una nueva transacción (reserva)
         
@@ -58,12 +58,15 @@ class Transaction:
             "product_id": product_id,
             "buyer_id": buyer_id,
             "seller_id": seller_id,
-            
+            "buyer_username": buyer_data.get('username') if buyer_data else '',
+            "seller_username": seller_data.get('username') if seller_data else '',
+    
             # Datos del producto (snapshot para el comprobante)
             "product_snapshot": {
                 "nombre": product_data.get("nombre"),
                 "descripcion": product_data.get("descripcion"),
                 "precio": product_data.get("precio"),
+                "costo": product_data.get("costo", 0),
                 "categoria": product_data.get("categoria"),
                 "talla": product_data.get("talla"),
                 "imagen_url": product_data.get("imagen_url")

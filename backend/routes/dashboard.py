@@ -249,5 +249,136 @@ def init_routes(db, product_model, user_model):
                 'success': False,
                 'message': f'Error al obtener estadísticas de precios: {str(e)}'
             }), 500
-    
+            
+
+    @dashboard_bp.route('/financial-summary', methods=['GET'])
+    @admin_required
+    def financial_summary(current_user_id, current_user_role):
+        """Resumen financiero general de la plataforma"""
+        try:
+            # Todas las transacciones completadas
+            completed_transactions = list(db.transactions.find({'status': 'completada'}))
+
+            # Calcular métricas
+            total_revenue = 0
+            total_cost = 0
+            total_profit = 0
+            transactions_count = len(completed_transactions)
+
+            for t in completed_transactions:
+                product = t['product_snapshot']
+                revenue = product.get('precio', 0)
+                cost = product.get('costo', 0)
+
+                total_revenue += revenue
+                total_cost += cost
+                total_profit += (revenue - cost)
+
+            # Promedio de margen de ganancia
+            avg_margin = 0
+            if total_revenue > 0:
+                avg_margin = (total_profit / total_revenue) * 100
+
+            # Vendedor top
+            pipeline = [
+                {'$match': {'status': 'completada'}},
+                {'$group': {
+                    '_id': '$seller_id',
+                    'total_sales': {'$sum': '$product_snapshot.precio'},
+                    'total_transactions': {'$sum': 1},
+                    'total_profit': {
+                        '$sum': {
+                            '$subtract': ['$product_snapshot.precio', '$product_snapshot.costo']
+                        }
+                    }
+                }},
+                {'$sort': {'total_profit': -1}},
+                {'$limit': 1}
+            ]
+
+            top_seller_data = list(db.transactions.aggregate(pipeline))
+            top_seller = None
+
+            if top_seller_data:
+                seller_id = top_seller_data[0]['_id']
+                seller = db.users.find_one({'_id': seller_id})
+                top_seller = {
+                    'username': seller.get('username') if seller else 'Unknown',
+                    'total_sales': top_seller_data[0]['total_sales'],
+                    'total_transactions': top_seller_data[0]['total_transactions'],
+                    'total_profit': top_seller_data[0]['total_profit']
+                }
+
+            return jsonify({
+                'success': True,
+                'data': {
+                    'total_transactions': transactions_count,
+                    'total_revenue': round(total_revenue, 2),
+                    'total_cost': round(total_cost, 2),
+                    'total_profit': round(total_profit, 2),
+                    'average_margin_percentage': round(avg_margin, 2),
+                    'top_seller': top_seller
+                }
+            }), 200
+
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'message': f'Error al obtener resumen financiero: {str(e)}'
+            }), 500
+
+    @dashboard_bp.route('/profit-by-category', methods=['GET'])
+    @admin_required
+    def profit_by_category(current_user_id, current_user_role):
+        """Ganancia por categoría"""
+        try:
+            pipeline = [
+                {'$match': {'status': 'completada'}},
+                {'$group': {
+                    '_id': '$product_snapshot.categoria',
+                    'total_revenue': {'$sum': '$product_snapshot.precio'},
+                    'total_cost': {'$sum': '$product_snapshot.costo'},
+                    'count': {'$sum': 1}
+                }},
+                {'$project': {
+                    'categoria': '$_id',
+                    'total_revenue': 1,
+                    'total_cost': 1,
+                    'total_profit': {'$subtract': ['$total_revenue', '$total_cost']},
+                    'count': 1,
+                    'avg_margin': {
+                        '$multiply': [
+                            {'$divide': [
+                                {'$subtract': ['$total_revenue', '$total_cost']},
+                                '$total_revenue'
+                            ]},
+                            100
+                        ]
+                    }
+                }},
+                {'$sort': {'total_profit': -1}}
+            ]
+
+            result = list(db.transactions.aggregate(pipeline))
+
+            data = [{
+                'categoria': item['categoria'],
+                'total_revenue': round(item['total_revenue'], 2),
+                'total_cost': round(item['total_cost'], 2),
+                'total_profit': round(item['total_profit'], 2),
+                'count': item['count'],
+                'avg_margin_percentage': round(item.get('avg_margin', 0), 2)
+            } for item in result]
+
+            return jsonify({
+                'success': True,
+                'data': data
+            }), 200
+
+        except Exception as e:
+            return jsonify({
+                'success': False,
+                'message': f'Error: {str(e)}'
+            }), 500      
+
     return dashboard_bp

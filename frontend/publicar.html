@@ -9,23 +9,43 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-light">
+  
   <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg" style="background-color:#e6ede9;">
     <div class="container">
       <a class="navbar-brand fw-bold text-success d-flex align-items-center" href="index.html">
         <i class="bi bi-tshirt me-2 text-success fs-4"></i> TRADEco
       </a>
-      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link text-success" href="index.html">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link text-success active fw-bold" href="publicar.html">Publicar</a></li>
-          <li class="nav-item"><a class="nav-link text-success" href="perfil.html">Perfil</a></li>
-          <li class="nav-item"><a class="nav-link text-success" href="beneficios.html">Beneficios</a></li>
-        </ul>
-      </div>
+<ul class="navbar-nav ms-auto" id="navbarMenu">
+  <li class="nav-item">
+    <a class="nav-link text-success" href="index.html">
+      <i class="bi bi-house"></i> Inicio
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-success" href="publicar.html">
+      <i class="bi bi-plus-circle"></i> Publicar
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-success" href="dashboard.html">
+      <i class="bi bi-graph-up"></i> Dashboard
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-success" href="perfil.html">
+      <i class="bi bi-person"></i> Perfil
+    </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link text-success" href="beneficios.html">
+      <i class="bi bi-gift"></i> Beneficios
+    </a>
+  </li>
+</ul>
     </div>
   </nav>
 
@@ -80,7 +100,17 @@
         <input type="number" class="form-control" id="precio" placeholder="Ej: 3000" min="0" required>
         <small class="text-muted">Ingresa 0 si es gratis o para intercambio</small>
       </div>
-      
+      <div class="mb-3">
+        <label class="form-label">
+          Costo de adquisición (ARS) *
+          <i class="bi bi-info-circle text-muted" 
+             title="¿Cuánto te costó este producto? Esto te ayudará a calcular tu ganancia"></i>
+        </label>
+        <input type="number" class="form-control" id="costo" placeholder="Ej: 1500" min="0" required>
+        <small class="text-muted">
+          Ingresa cuánto pagaste por este producto. Esta información es privada y te ayuda a calcular tus ganancias.
+        </small>
+      </div>
       <div class="mb-3">
         <label class="form-label">Imagen de la prenda *</label>
         <input type="file" class="form-control" id="imagen" accept="image/*" required>
@@ -156,8 +186,8 @@
       formData.append('categoria', document.getElementById('categoria').value);
       formData.append('talla', document.getElementById('talla').value);
       formData.append('precio', document.getElementById('precio').value);
+      formData.append('costo', document.getElementById('costo').value);
       formData.append('imagen', imagenInput.files[0]);
-      
       // Deshabilitar botón mientras procesa
       const btn = document.getElementById('submitBtn');
       const originalText = btn.innerHTML;
@@ -189,6 +219,8 @@
         btn.innerHTML = originalText;
       }
     });
+
+
   </script>
 </body>
 </html>

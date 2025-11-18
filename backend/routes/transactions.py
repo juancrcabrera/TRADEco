@@ -43,12 +43,16 @@ def init_routes(db, transaction_model, product_model, user_model):
                     'message': 'No puedes comprar tu propio producto'
                 }), 400
             
+            buyer = user_model.find_by_id(current_user_id)
+            seller = user_model.find_by_id(seller_id)
             # Crear transacción
             transaction_id, transaction_code = transaction_model.create(
                 product_id=product_id,
                 buyer_id=current_user_id,
                 seller_id=seller_id,
-                product_data=product
+                product_data=product,
+                buyer_data=buyer,
+                seller_data=seller  
             )
             
             # Reservar producto

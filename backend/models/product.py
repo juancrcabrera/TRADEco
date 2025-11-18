@@ -31,6 +31,7 @@ class Product:
         product_data = {
             "nombre": data.get("nombre"),
             "descripcion": data.get("descripcion", ""),
+            "costo": float(data.get("costo", 0)),
             "precio": float(data.get("precio", 0)),
             "talla": data.get("talla", ""),
             "categoria": data.get("categoria"),
@@ -106,10 +107,10 @@ class Product:
         """Actualizar un producto (solo el dueño)"""
         update_data = {"updated_at": datetime.utcnow()}
         
-        allowed_fields = ["nombre", "descripcion", "precio", "talla", "categoria", "imagen_url"]
+        allowed_fields = ["nombre", "descripcion", "precio", "costo", "talla", "categoria", "imagen_url"]
         for field in allowed_fields:
             if field in data:
-                if field == "precio":
+                if field in ["precio", "costo"]:
                     update_data[field] = float(data[field])
                 else:
                     update_data[field] = data[field]
@@ -226,6 +227,7 @@ class Product:
             "id": str(product["_id"]),
             "nombre": product.get("nombre"),
             "descripcion": product.get("descripcion", ""),
+            "costo": product.get("costo", 0),
             "precio": product.get("precio", 0),
             "talla": product.get("talla", ""),
             "categoria": product.get("categoria"),

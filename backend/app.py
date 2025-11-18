@@ -16,6 +16,8 @@ from routes.auth import init_routes as init_auth_routes
 from routes.products import init_routes as init_products_routes
 from routes.users import init_routes as init_users_routes
 from routes.transactions import init_routes as init_transactions_routes
+from routes.finances import init_routes as init_finances_routes
+from routes.dashboard import init_routes as init_dashboard_routes
 
 # Crear aplicación Flask
 app = Flask(__name__)
@@ -64,15 +66,18 @@ product_model = Product(db)
 transaction_model = Transaction(db)
 
 # Registrar blueprints (rutas)
+dashboard_bp = init_dashboard_routes(db, product_model, user_model)
 auth_bp = init_auth_routes(db, user_model)
 products_bp = init_products_routes(db, product_model, user_model)
 users_bp = init_users_routes(db, user_model)
 transactions_bp = init_transactions_routes(db, transaction_model, product_model, user_model)
-
+finances_bp = init_finances_routes(db, transaction_model, product_model, user_model)
+app.register_blueprint(finances_bp, url_prefix='/api/finances')
 app.register_blueprint(auth_bp, url_prefix='/api/auth')
 app.register_blueprint(products_bp, url_prefix='/api/products')
 app.register_blueprint(users_bp, url_prefix='/api/users')
 app.register_blueprint(transactions_bp, url_prefix='/api/transactions')
+app.register_blueprint(dashboard_bp, url_prefix='/api/dashboard')
 
 # Ruta para servir archivos estáticos (imágenes)
 @app.route('/uploads/products/<filename>')
@@ -176,6 +181,11 @@ if __name__ == '__main__':
     print("  POST   /api/transactions/<id>/complete")
     print("  POST   /api/transactions/<id>/cancel")
     print("  POST   /api/transactions/<id>/note")
+    print("\n  === FINANZAS ===")
+    print("  GET    /api/finances/my-finances")
+    print("  GET    /api/finances/sales-history")
+    print("  GET    /api/finances/purchases-history")
+    print("  GET    /api/finances/monthly-report")
     print("\n")
     
     app.run(
